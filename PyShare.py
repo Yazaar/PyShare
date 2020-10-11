@@ -36,6 +36,9 @@ app = Flask(__name__, template_folder='web/HTML', static_folder='web/public')
 rootFolder = Path(__file__).parent
 filesFolder = rootFolder / 'shared'
 
+if filesFolder.is_dir() == False:
+    filesFolder.mkdir()
+
 @app.route('/', methods=['GET'])
 def web_root():
     return render_template('index.html')
