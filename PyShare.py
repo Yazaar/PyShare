@@ -3,24 +3,24 @@ from socket import gethostname, gethostbyname
 from pathlib import Path
 from os import listdir
 
-print('website: http://' + gethostbyname(gethostname()) + ':8080')
-
-def secure_filename(filename):
-    if not '.' in filename:
-        return False
-    filedata = filename.rsplit('.', 1)
-    allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-'
+def secure_filename(rawFilename):
+    if '.' in rawFilename:
+        filedata = rawFilename.rsplit('.', 1)
+        filedata[1] = '.' + filedata[1]
+    else:
+        filedata = [rawFilename, '']
+    # using global allowed
     filename = ''
     for letter in filedata[0]:
         if letter in allowed:
             filename += letter
-    if (filename + '.' + filedata[1]) in listdir(filesFolder):
+    if (filename + filedata[1]) in listdir(filesFolder):
         antiCopy = 0
-        while (filename + str(antiCopy) + '.' + filedata[1]) in listdir(filesFolder):
+        while (filename + str(antiCopy) + filedata[1]) in listdir(filesFolder):
             antiCopy += 1
-        filename = filename + str(antiCopy) + '.' + filedata[1]
+        filename = filename + str(antiCopy) + filedata[1]
     else:
-        filename = filename + '.' + filedata[1]
+        filename = filename + filedata[1]
     return filename
 
 def getFiles(folder):
@@ -32,9 +32,16 @@ def getFiles(folder):
             files['files'].append({'path': file.relative_to(filesFolder).as_posix(), 'name': file.name})
     return files
 
+print('website: http://' + gethostbyname(gethostname()) + ':8080')
 app = Flask(__name__, template_folder='web/HTML', static_folder='web/public')
 rootFolder = Path(__file__).parent
 filesFolder = rootFolder / 'shared'
+
+if (rootFolder / 'allowed.txt').is_file():
+    with open(rootFolder / 'allowed.txt', 'r') as f:
+        allowed = f.read()
+else:
+    allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-. '
 
 if filesFolder.is_dir() == False:
     filesFolder.mkdir()
