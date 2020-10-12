@@ -45,7 +45,8 @@ def web_root():
 
 @app.route('/upload', methods=['GET'])
 def web_upload():
-    return render_template('upload.html')
+    uploaded = request.args.get('file_uploaded')
+    return render_template('upload.html', uploaded=uploaded)
 
 @app.route('/download', methods=['GET'])
 def web_download():
@@ -62,17 +63,17 @@ def web_download_file(filepath):
 @app.route('/upload', methods=['POST'])
 def web_upload_post():
     if 'file' not in request.files:
-        return redirect('/?file_uploaded=0')
+        return redirect('/upload?file_uploaded=0')
 
     file = request.files['file']
     if not file:
-        return redirect('/?file_uploaded=0')
+        return redirect('/upload?file_uploaded=0')
 
     filename = secure_filename(file.filename)
     if filename == False:
-        return redirect('/?file_uploaded=0')
+        return redirect('/upload?file_uploaded=0')
     with open(filesFolder / filename, 'wb') as f:
         file.save(f)
-    return redirect('/?file_uploaded=1')
+    return redirect('/upload?file_uploaded=1')
 
 app.run(host='0.0.0.0', port=8080)

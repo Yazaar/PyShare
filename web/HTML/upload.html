@@ -6,12 +6,18 @@
     <title>Document</title>
     <link rel="stylesheet" href="/public/css/main.css">
 </head>
-<body>
+<body id="UploadPage">
     <h1>PyShare</h1>
     <h3><a href="/download">download files here</a></h3>
     <form action="/upload" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" id="fileupload">
         <button type="submit">UPLOAD!</button>
     </form>
+    <p class="tip">Have patience with large files</p>
+    {% if uploaded == '1' %}
+    <p class="tip">File upload complete</p>
+    {% elif uploaded == '0' %}
+    <p class="tip">File upload failed</p>
+    {% endif %}
 </body>
 </html>
