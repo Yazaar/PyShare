@@ -79,23 +79,38 @@ body {
     display: block;
 }
 
-form {
+#IndexPage h3 {
+    font-size: 2rem;
+    margin: 1rem 0;
+}
+
+.virtualUploadForm {
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
+    height: auto;
 }
 
-button[type=submit] {
+.virtualUploadForm button {
     margin-top: .5rem;
     color: #000000;
 }
 
-.tip {
-    font-size: 1.3rem;
+.progressbarWrapper {
     margin-top: .5rem;
 }
 
-#IndexPage h3 {
-    font-size: 2rem;
-    margin: 1rem 0;
+.progressbarWrapper p {
+    text-align: center;
+}
+
+.progressbar {
+    height: 1rem;
+    background: #636363;
+}
+
+.innerProgressbar {
+    height: 100%;
+    background: #FFFFFF;
+    width: 0;
 }

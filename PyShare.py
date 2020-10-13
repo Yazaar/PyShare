@@ -70,17 +70,15 @@ def web_download_file(filepath):
 @app.route('/upload', methods=['POST'])
 def web_upload_post():
     if 'file' not in request.files:
-        return redirect('/upload?file_uploaded=0')
+        return '{"success":false, "message":"file not found"}'
 
     file = request.files['file']
     if not file:
-        return redirect('/upload?file_uploaded=0')
+        return '{"success":false, "message":"file not found"}'
 
     filename = secure_filename(file.filename)
-    if filename == False:
-        return redirect('/upload?file_uploaded=0')
     with open(filesFolder / filename, 'wb') as f:
         file.save(f)
-    return redirect('/upload?file_uploaded=1')
+    return '{"success":true, "message":"file uploaded"}'
 
 app.run(host='0.0.0.0', port=8080)

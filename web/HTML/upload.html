@@ -9,15 +9,16 @@
 <body id="UploadPage">
     <h1>PyShare</h1>
     <h3><a href="/download">download files here</a></h3>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
+    <div class="virtualUploadForm">
         <input type="file" name="file" id="fileupload">
-        <button type="submit">UPLOAD!</button>
-    </form>
-    <p class="tip">Have patience with large files</p>
-    {% if uploaded == '1' %}
-    <p class="tip">File upload complete</p>
-    {% elif uploaded == '0' %}
-    <p class="tip">File upload failed</p>
-    {% endif %}
+        <button id="uploadBtn">UPLOAD!</button>
+        <div class="progressbarWrapper">
+            <p class="progressbarDetails">no active upload</p>
+            <div class="progressbar">
+                <div class="innerProgressbar"></div>
+            </div>
+        </div>
+    </div>
+    <script src="/public/js/uploader.js"></script>
 </body>
 </html>
