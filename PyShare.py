@@ -4,23 +4,21 @@ from pathlib import Path
 from os import listdir
 
 def secure_filename(rawFilename):
-    if '.' in rawFilename:
-        filedata = rawFilename.rsplit('.', 1)
-        filedata[1] = '.' + filedata[1]
-    else:
-        filedata = [rawFilename, '']
-    # using global allowed
-    filename = ''
-    for letter in filedata[0]:
+    validatedFilename = ''
+    for letter in rawFilename:
+        # using global allowed
         if letter in allowed:
-            filename += letter
-    if (filename + filedata[1]) in listdir(filesFolder):
+            validatedFilename += letter
+    if validatedFilename in listdir(filesFolder):
+        filedata = validatedFilename.rsplit('.', 1)
+        if len(filedata) == 1:
+            filedata = [filedata, '']
         antiCopy = 0
-        while (filename + str(antiCopy) + filedata[1]) in listdir(filesFolder):
+        while (filedata[0] + str(antiCopy) + filedata[1]) in listdir(filesFolder):
             antiCopy += 1
-        filename = filename + str(antiCopy) + filedata[1]
+        filename = filedata[0] + str(antiCopy) + filedata[1]
     else:
-        filename = filename + filedata[1]
+        filename = validatedFilename
     return filename
 
 def getFiles(folder):
@@ -63,6 +61,8 @@ def web_download():
 @app.route('/download/<path:filepath>', methods=['GET'])
 def web_download_file(filepath):
     requestedFile = filesFolder / filepath
+    if str(requestedFile.relative_to(filesFolder))[:2] == '..':
+        return redirect('/download')
     if requestedFile.is_file() == False:
         return redirect('/download')
     return send_from_directory(requestedFile.parent, requestedFile.name, as_attachment=True)
