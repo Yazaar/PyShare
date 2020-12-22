@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, send_from_directory
 from socket import gethostname, gethostbyname
 from pathlib import Path
 from os import listdir
+from sys import argv
 
 def secure_filename(rawFilename):
     validatedFilename = ''
@@ -30,7 +31,6 @@ def getFiles(folder):
             files['files'].append({'path': file.relative_to(filesFolder).as_posix(), 'name': file.name})
     return files
 
-print('website: http://' + gethostbyname(gethostname()) + ':8080')
 app = Flask(__name__, template_folder='web/HTML', static_folder='web/public')
 rootFolder = Path(__file__).parent
 filesFolder = rootFolder / 'shared'
@@ -81,4 +81,14 @@ def web_upload_post():
         file.save(f)
     return '{"success":true, "message":"file uploaded"}'
 
-app.run(host='0.0.0.0', port=8080)
+port = 8080
+
+for i in range(len(argv)):
+    if argv[i] == '-p' or argv[i] == '--port':
+        try:
+            port = int(argv[i+1])
+        except Exception:
+            pass
+
+print('website: http://' + gethostbyname(gethostname()) + ':' + str(port))
+app.run(host='0.0.0.0', port=port)
