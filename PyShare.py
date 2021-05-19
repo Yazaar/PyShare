@@ -1,8 +1,10 @@
 from flask import Flask, render_template, redirect, request, send_from_directory
 from socket import gethostname, gethostbyname
 from pathlib import Path
-from os import listdir
+from os import listdir, chdir
 from sys import argv
+
+chdir(Path(__file__).parent)
 
 def secure_filename(rawFilename):
     validatedFilename = ''
@@ -32,11 +34,10 @@ def getFiles(folder):
     return files
 
 app = Flask(__name__, template_folder='web/HTML', static_folder='web/public')
-rootFolder = Path(__file__).parent
-filesFolder = rootFolder / 'shared'
+filesFolder = 'shared'
 
-if (rootFolder / 'allowed.txt').is_file():
-    with open(rootFolder / 'allowed.txt', 'r') as f:
+if ('allowed.txt').is_file():
+    with open('allowed.txt', 'r') as f:
         allowed = f.read()
 else:
     allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-. '
