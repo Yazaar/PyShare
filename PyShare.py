@@ -33,11 +33,12 @@ def getFiles(folder):
             files['files'].append({'path': file.relative_to(filesFolder).as_posix(), 'name': file.name})
     return files
 
-app = Flask(__name__, template_folder='web/HTML', static_folder='web/public')
-filesFolder = 'shared'
+app = Flask(str(Path().absolute()), template_folder='web/HTML', static_folder='web/public')
+filesFolder = Path('shared')
+allowedFile = Path('allowed.txt')
 
-if ('allowed.txt').is_file():
-    with open('allowed.txt', 'r') as f:
+if allowedFile.is_file():
+    with open(allowedFile, 'r') as f:
         allowed = f.read()
 else:
     allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-. '
@@ -66,6 +67,7 @@ def web_download_file(filepath):
         return redirect('/download')
     if requestedFile.is_file() == False:
         return redirect('/download')
+    print(requestedFile, requestedFile.parent, requestedFile.name)
     return send_from_directory(requestedFile.parent, requestedFile.name, as_attachment=True)
 
 @app.route('/upload', methods=['POST'])
