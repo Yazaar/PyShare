@@ -16,6 +16,8 @@ def secure_filename(rawFilename):
         filedata = validatedFilename.rsplit('.', 1)
         if len(filedata) == 1:
             filedata = [filedata, '']
+        else:
+            filedata[1] = '.' + filedata[1]
         antiCopy = 0
         while (filedata[0] + str(antiCopy) + filedata[1]) in listdir(filesFolder):
             antiCopy += 1
