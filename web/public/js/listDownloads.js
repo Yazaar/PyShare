@@ -29,10 +29,17 @@ function generateTree(obj, root=false) {
             var data = obj.files[i];
             var file = document.createElement('div');
             file.classList.add('file');
+            var text = document.createElement('p');
+            text.innerText = data.name;
             var downloadUrl = document.createElement('a');
-            downloadUrl.innerText = data.name + ' (download)';
-            downloadUrl.href = '/download/' + data.path;
+            downloadUrl.innerText = 'download';
+            downloadUrl.href = '/download/' + data.path + '?attachment=1';
+            var showUrl = document.createElement('a');
+            showUrl.innerText = 'show';
+            showUrl.href = '/download/' + data.path;
+            file.appendChild(text);
             file.appendChild(downloadUrl);
+            file.appendChild(showUrl);
             files.appendChild(file);
         }
     }

@@ -20,10 +20,6 @@ body {
     width: 60rem;
     max-width: 90vw;
     font-size: 1.2rem;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
 }
 
 .details {
@@ -69,9 +65,22 @@ body {
 
 .file {
     margin: .5rem .1rem;
+    border: rgba(255, 255, 255, .2) solid .1rem;
+    border-radius: .5rem;
+    padding: .2rem;
+}
+
+.file a {
+    display: inline-block;
+    margin: .2rem .5rem;
+    padding: .1rem .2rem;
+    border-radius: .5rem;
+    border: rgba(255, 255, 255, .5) solid .1rem;
+    text-decoration: none;
 }
 
 .file a:hover {
+    border: rgba(255, 255, 255, .25) solid .1rem;
     color: #9E9E9E;
 }
 
