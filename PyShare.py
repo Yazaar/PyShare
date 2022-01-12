@@ -4,6 +4,10 @@ from pathlib import Path
 from os import listdir, chdir
 from sys import argv
 
+LOCAL_UPLOADS_ONLY = '--blockNgrokUpload' in argv
+
+def blockUpload(environ): return 'HTTP_X_FORWARDED_FOR' in environ and LOCAL_UPLOADS_ONLY # block NGROK connections
+
 def secure_filename(rawFilename : str, allowed : list, filesFolder : Path):
     validatedFilename = ''
     for letter in rawFilename:
@@ -50,17 +54,20 @@ def launch():
 
     @app.route('/', methods=['GET'])
     def web_root():
-        return render_template('index.html')
+        return render_template('index.html', uploadDisabled=blockUpload(request.environ))
 
     @app.route('/upload', methods=['GET'])
     def web_upload():
+        if blockUpload(request.environ):
+            return redirect('/')
+
         uploaded = request.args.get('file_uploaded')
         return render_template('upload.html', uploaded=uploaded)
 
     @app.route('/download', methods=['GET'])
     def web_download():
         files = getFiles(filesFolder, filesFolder)
-        return render_template('download.html', fileTree=files)
+        return render_template('download.html', fileTree=files, uploadDisabled=blockUpload(request.environ))
 
     @app.route('/download/<path:filepath>', methods=['GET'])
     def web_download_file(filepath):
@@ -75,6 +82,9 @@ def launch():
     def web_upload_post():
         if 'file' not in request.files:
             return '{"success":false, "message":"file not found"}'
+        
+        if blockUpload(request.environ):
+            return '{"success":false, "message":"upload blocked"}'
 
         file = request.files['file']
         if not file:

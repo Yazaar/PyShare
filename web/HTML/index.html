@@ -8,7 +8,9 @@
 </head>
 <body id="IndexPage">
     <h1>PyShare</h1>
+    {% if not uploadDisabled %}
     <h3><a href="/upload">upload files here</a></h3>
+    {% endif %}
     <h3><a href="/download">download files here</a></h3>
 </body>
 </html>
