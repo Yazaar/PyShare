@@ -7,14 +7,37 @@
     <link rel="stylesheet" href="/public/css/main.css">
 </head>
 <body id="DownloadPage">
-    <h1>PyShare</h1>
+    <h1><a href="https://github.com/Yazaar/PyShare" target="_blank" rel="noopener noreferrer" >PyShare</a></h1>
     {% if not uploadDisabled %}
     <h3><a href="/upload">upload files here</a></h3>
     {% endif %}
-    <div id="downloadsTree"></div>
-    <script>
-        var fileTree = {{fileTree|safe}};
-    </script>
+    <div id="downloadsTree">
+        <div class="directory open">
+            <div class="details" title="Open / Close">
+                <div class="arrowIcon"></div>
+                <p class="dirname">{{fileTree.name}}</p>
+            </div>
+            <div class="files">
+                {% for f in fileTree.files recursive %}
+                {% if 'files' in f %}
+                <div class="directory">
+                    <div class="details" title="Open / Close">
+                        <div class="arrowIcon"></div>
+                        <p class="dirname">{{f.name}}</p>
+                    </div>
+                    <div class="files">{{loop(f.files)}}</div>
+                </div>
+                {% else %}
+                <div class="file">
+                    <p>{{f.name}}</p>
+                    <a href="/download/{{f.path}}?attachment=1">download</a>
+                    <a href="/download/{{f.path}}">show</a>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
     <script src="/public/js/listDownloads.js"></script>
 </body>
 </html>
