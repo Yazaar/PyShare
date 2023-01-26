@@ -14,26 +14,23 @@
         form.append('file', uploadThis);
         var sizename;
         var dividor;
-
-        xml.upload.onloadstart = function(e){
-            var total = e.total || e.totalSize;
-            console.log(total);
-            if (isNaN(total)) {
-                sizename = 'B';
-                dividor = 1;
-            } else if (total > 1000000000) {
-                sizename = 'GB';
-                dividor = 1000000000;
-            } else if (total > 1000000) {
-                sizename = 'MB';
-                dividor = 1000000;
-            } else if (total > 1000) {
-                sizename = 'KB';
-                dividor = 1000;
-            } else {
-                sizename = 'B';
-                dividor = 1;
-            }
+        
+        var total = uploadThis.size;
+        if (isNaN(total)) {
+            sizename = 'B';
+            dividor = 1;
+        } else if (total > 1000000000) {
+            sizename = 'GB';
+            dividor = 1000000000;
+        } else if (total > 1000000) {
+            sizename = 'MB';
+            dividor = 1000000;
+        } else if (total > 1000) {
+            sizename = 'KB';
+            dividor = 1000;
+        } else {
+            sizename = 'B';
+            dividor = 1;
         }
 
         xml.upload.onprogress = function(e){

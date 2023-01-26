@@ -102,7 +102,6 @@ def launch():
             try: port = int(argv[i+1])
             except Exception: pass
 
-    print('website: http://' + gethostbyname(gethostname()) + ':' + str(port))
     app.run(host='0.0.0.0', port=port)
 
 if __name__ == '__main__':
