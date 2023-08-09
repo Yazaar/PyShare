@@ -8,6 +8,27 @@ LOCAL_UPLOADS_ONLY = '--blockNgrokUpload' in argv
 
 def blockUpload(environ): return 'HTTP_X_FORWARDED_FOR' in environ and LOCAL_UPLOADS_ONLY # block NGROK connections
 
+def getFileDir():
+    defPath = Path('shared')
+    argvC = len(argv)
+    try:
+        i = argv.index('--fileDir') + 1
+        if i == argvC: raise ValueError()
+    except ValueError:
+        defPath.mkdir(exist_ok=True, parents=True)
+        return defPath
+
+    rawPath = argv[i]
+
+    try:
+        cPath = Path(rawPath)
+        cPath.mkdir(exist_ok=True, parents=True)
+        return cPath
+    except Exception:
+        print(f'invalid path for --fileDir ({rawPath})')
+        defPath.mkdir(exist_ok=True, parents=True)
+        return defPath
+
 def secure_filename(rawFilename : str, allowed : list, filesFolder : Path):
     validatedFilename = ''
     for letter in rawFilename:
@@ -40,7 +61,9 @@ def launch():
     chdir(Path(__file__).parent)
 
     app = Flask(str(Path().absolute()), template_folder='web/HTML', static_folder='web/public')
-    filesFolder = Path('shared')
+    filesFolder = getFileDir()
+    print(f'Shared directory: {filesFolder.absolute().as_posix()}')
+
     allowedFile = Path('allowed.txt')
 
     if allowedFile.is_file():
@@ -48,9 +71,6 @@ def launch():
             allowed = f.read()
     else:
         allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-. '
-
-    if filesFolder.is_dir() == False:
-        filesFolder.mkdir()
 
     @app.route('/', methods=['GET'])
     def web_root():
@@ -82,7 +102,7 @@ def launch():
     def web_upload_post():
         if 'file' not in request.files:
             return '{"success":false, "message":"file not found"}'
-        
+
         if blockUpload(request.environ):
             return '{"success":false, "message":"upload blocked"}'
 
